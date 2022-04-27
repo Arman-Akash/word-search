@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+.word-box {
+  height: 580px;
+  overflow: auto;
+}
+.word-box ul {
+  border-top: 1px solid;
+  list-style: none;
+  padding: 0;
+}
+
+.word-box ul li {
+  background-color: #eee;
+  border-bottom: 1px solid;
+}
+.searched-word {
+  margin-top: 15px;
+  /* letter-spacing: 5px; */
+}
+.letter-box {
+  padding: 5px 10px;
+  background-color: #ddd;
+  border: 1px solid #000;
+}
+
+.mt-2 {
+  margin-top: 10px;
+}

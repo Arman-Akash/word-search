@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+// import  db  from './data/db.json';
+import wordsDb from 'an-array-of-english-words';
 
 function App() {
   const [dictionary, setDictionary] = useState(null);
@@ -7,12 +9,15 @@ function App() {
   const [words, setWords] = useState(null);
   const [searchWord, setSearchWord] = useState('');
 
+  // const loadData = () => JSON.parse(JSON.stringify(db));
+
   const handleKeyUp = (e) => {
+    e.preventDefault();
     if (e.key === 'Backspace') {
       setSearchWord(word => word.slice(0, -1));
       return;
     }
-    if(e.key === 'Enter') {
+    if (e.key === 'Enter') {
       submit(e);
       return;
     }
@@ -23,11 +28,7 @@ function App() {
 
 
   useEffect(() => {
-    fetch('http://localhost:3001/dictionary')
-      .then(res => res.json())
-      .then(json => {
-        setDictionary(json);
-      })
+    setDictionary(wordsDb)
   }, [setDictionary])
 
   useEffect(() => {
@@ -39,7 +40,7 @@ function App() {
 
   const submit = (e) => {
     e.preventDefault();
-    var words = Object.keys(dictionary).filter(e => e.length == letterNo).sort();
+    var words = dictionary.filter(e => e.length == letterNo).sort();
     if (searchWord != '') {
       for (let i in searchWord) {
         if (searchWord[i] != ' ') {
@@ -53,16 +54,31 @@ function App() {
   return (
     <div className="App">
       <form onSubmit={(e) => submit(e)}>
-        <p>{searchWord}</p>
         <label>Number of Letters: </label>
         <input name="letterNo" type="number" onInput={(e) => {
           setLetterNo(e.target.value);
         }} />
         <input type="submit" />
+        <div className='searched-word'>
+          {searchWord && Object.keys(searchWord).map(i => (
+            <span key={i} className='letter-box'>{searchWord[i]}</span>
+          ))}
+        </div>
       </form>
-      {words && words.map(e => (
-        <p key={e}>{e}</p>
-      ))}
+      <div className="word-box">
+        {
+          words && (
+            <>
+              <div className='mt-2'>{words.length} words found</div>
+              <ul>
+                {words.map(e => (
+                  <li key={e}>{e}</li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+      </div>
     </div>
   );
 }
