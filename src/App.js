@@ -8,12 +8,16 @@ function App() {
   const [letterNo, setLetterNo] = useState(0);
   const [words, setWords] = useState(null);
   const [searchWord, setSearchWord] = useState('');
+  const [focused, setFocused] = useState(false);
+  const [excludes, setExcludes] = useState('');
 
   // const loadData = () => JSON.parse(JSON.stringify(db));
 
-  const handleKeyUp = (e) => {
-    e.preventDefault();
-    if (e.key === 'Backspace') {
+  const handleKeyDown = (e) => {
+    if(e.key === 'Space') {
+      e.preventDefault();
+    }
+    if (e.key === 'Backspace' && !focused) {
       setSearchWord(word => word.slice(0, -1));
       return;
     }
@@ -21,34 +25,42 @@ function App() {
       submit(e);
       return;
     }
-    if (/^[A-Za-z ]$/.test(e.key)) {
+    if (!focused && /^[A-Za-z ]$/.test(e.key)) {
       setSearchWord(word => word + e.key.toLowerCase());
     }
   }
-
 
   useEffect(() => {
     setDictionary(wordsDb)
   }, [setDictionary])
 
   useEffect(() => {
-    window.addEventListener("keyup", handleKeyUp)
+    window.addEventListener("keydown", handleKeyDown)
     return () => {
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
     }
-  }, [handleKeyUp])
+  }, [handleKeyDown])
 
   const submit = (e) => {
     e.preventDefault();
-    var words = dictionary.filter(e => e.length == letterNo).sort();
-    if (searchWord != '') {
+    var words = [...dictionary];
+    if (letterNo !== 0 && letterNo !== null) {
+      words = words.filter(e => e.length == letterNo)
+    }
+    words = words.sort();
+    if (searchWord !== '') {
       for (let i in searchWord) {
-        if (searchWord[i] != ' ') {
+        if (searchWord[i] !== ' ') {
           words = words.filter(e => e[i] == searchWord[i]);
         }
       }
     }
-    setWords(words);
+    if (excludes !== '') {
+      for(let i in excludes) {
+        words = words.filter(e => !e.includes(excludes[i]))
+      }
+    }
+      setWords(words);
   }
 
   return (
@@ -57,8 +69,15 @@ function App() {
         <label>Number of Letters: </label>
         <input name="letterNo" type="number" onInput={(e) => {
           setLetterNo(e.target.value);
-        }} />
-        <input type="submit" />
+        }} /> <br />
+        <label>Excludes Letters: </label>
+        <input type="text" name="excludes" style={{ textTranform: 'lowercase' }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onInput={(e) => setExcludes(e.target.value)}
+        /> <br />
+        <input type="submit" /> <br />
+        <label>Words like: (type; press space to skip letter)</label>
         <div className='searched-word'>
           {searchWord && Object.keys(searchWord).map(i => (
             <span key={i} className='letter-box'>{searchWord[i]}</span>
@@ -71,7 +90,7 @@ function App() {
             <>
               <div className='mt-2'>{words.length} words found</div>
               <ul>
-                {words.map(e => (
+                {words?.map(e => (
                   <li key={e}>{e}</li>
                 ))}
               </ul>
