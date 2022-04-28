@@ -14,7 +14,7 @@ function App() {
   // const loadData = () => JSON.parse(JSON.stringify(db));
 
   const handleKeyDown = (e) => {
-    if(e.key === 'Space') {
+    if (e.key === 'Space') {
       e.preventDefault();
     }
     if (e.key === 'Backspace' && !focused) {
@@ -56,27 +56,29 @@ function App() {
       }
     }
     if (excludes !== '') {
-      for(let i in excludes) {
+      for (let i in excludes) {
         words = words.filter(e => !e.includes(excludes[i]))
       }
     }
-      setWords(words);
+    setWords(words);
   }
 
   return (
     <div className="App">
       <form onSubmit={(e) => submit(e)}>
         <label>Number of Letters: </label>
-        <input name="letterNo" type="number" onInput={(e) => {
-          setLetterNo(e.target.value);
-        }} /> <br />
+        <input name="letterNo" type="number"
+          onInput={(e) => {
+            setLetterNo(e.target.value);
+          }}
+        /> <br />
         <label>Excludes Letters: </label>
         <input type="text" name="excludes" style={{ textTranform: 'lowercase' }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           onInput={(e) => setExcludes(e.target.value)}
         /> <br />
-        <input type="submit" /> <br />
+        <input type="submit" value="search" /> <br />
         <label>Words like: (type; press space to skip letter)</label>
         <div className='searched-word'>
           {searchWord && Object.keys(searchWord).map(i => (
