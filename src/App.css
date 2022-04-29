@@ -38,7 +38,7 @@
 }
 
 .word-box {
-  height: 420px;
+  max-height: 420px;
   overflow: auto;
 }
 .word-box ul {
@@ -50,6 +50,7 @@
 .word-box ul li {
   background-color: #eee;
   border-bottom: 1px solid;
+  cursor: pointer;
 }
 .searched-word {
   margin-top: 15px;

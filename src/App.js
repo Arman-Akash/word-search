@@ -12,6 +12,7 @@ function App() {
   const [excludes, setExcludes] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedWord, setSelectedWord] = useState('');
+  const [includeWords, setIncludes] = useState('');
 
   const handleKeyDown = (e) => {
     if (e.key === 'Space') {
@@ -60,37 +61,82 @@ function App() {
         words = words.filter(e => !e.includes(excludes[i]))
       }
     }
+    if (includeWords !== '') {
+      for (let i in includeWords) {
+        words = words.filter(e => e.includes(includeWords[i]))
+      }
+    }
     setWords(words);
   }
 
   return (
-    <div className="App">
+    <div className="App mt-2">
       <form onSubmit={(e) => submit(e)}>
-        <label>Number of Letters: </label>
-        <input name="letterNo" type="number"
-          onInput={(e) => {
-            setLetterNo(e.target.value);
-          }}
-        /> <br />
-        <label>Excludes Letters: </label>
-        <input type="text" name="excludes" style={{ textTranform: 'lowercase' }}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          onInput={(e) => setExcludes(e.target.value)}
-        /> <br />
+        <div className='row'>
+          <div className='col-md-6 col-xs-12 text-right mr-2'>
+            <label>Number of Letters: </label>
+            <input name="letterNo"
+              type="number"
+              className='mr-2'
+              onInput={(e) => {
+                setLetterNo(e.target.value);
+              }}
+            />
+          </div>
+          <div className='col-md-4 col-xs-12  text-right mr-2'>
+            <label>Excludes Letters: </label>
+            <input type="text"
+              name="excludes"
+              style={{ textTranform: 'lowercase' }}
+              className="mr-2"
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              onInput={(e) => setExcludes(e.target.value)}
+            />
+          </div>
+          <div className='col-md-6 col-xs-12  text-right mr-2'>
+            <label>Must Includes : </label>
+            <input type="text"
+              name="inclues"
+              style={{ textTranform: 'lowercase' }}
+              className="mr-2"
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              onInput={(e) => setIncludes(e.target.value)}
+            />
+          </div>
+          <div className='col-md-4 col-xs-12  text-right mr-2'>
+            <label>Words like:
+              <input
+                placeholder='press space to skip letter'
+                value={searchWord}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                onInput={(e) => {
+                  if (/^[A-Za-z ]+$/.test(e.target.value)) {
+                    setSearchWord(e.target.value.toLowerCase());
+                  }
+                  if (e.target.value === '') {
+                    setSearchWord('');
+                  }
+                }}
+              />
+            </label>
+          </div>
+        </div>
+
         <input type="submit" value="search" /> <br />
-        <label>Words like: (type; press space to skip letter)</label>
         <div className='searched-word'>
           {searchWord && Object.keys(searchWord).map(i => (
             <span key={i} className='letter-box'>{searchWord[i]}</span>
           ))}
         </div>
       </form>
-      <div className="word-box">
-        {
-          words && (
-            <>
-              <div>{words.length} words found</div>
+      {
+        words && (
+          <>
+            <div>{words.length} words found</div>
+            <div className="word-box">
               <ul>
                 {words?.map(e => (
                   <li key={e} onClick={() => {
@@ -99,17 +145,17 @@ function App() {
                   }}>{e}</li>
                 ))}
               </ul>
-            </>
-          )
-        }
+            </div>
+          </>
+        )
+      }
 
-        <DefinationModal
-          show={showModal}
-          setShow={setShowModal}
-          word={selectedWord}
-        />
+      <DefinationModal
+        show={showModal}
+        setShow={setShowModal}
+        word={selectedWord}
+      />
 
-      </div>
     </div>
   );
 }
