@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-// import  db  from './data/db.json';
 import wordsDb from 'an-array-of-english-words';
+import DefinationModal from './DefinationModal';
 
 function App() {
   const [dictionary, setDictionary] = useState(null);
@@ -10,8 +10,8 @@ function App() {
   const [searchWord, setSearchWord] = useState('');
   const [focused, setFocused] = useState(false);
   const [excludes, setExcludes] = useState('');
-
-  // const loadData = () => JSON.parse(JSON.stringify(db));
+  const [showModal, setShowModal] = useState(false);
+  const [selectedWord, setSelectedWord] = useState('');
 
   const handleKeyDown = (e) => {
     if (e.key === 'Space') {
@@ -90,15 +90,25 @@ function App() {
         {
           words && (
             <>
-              <div className='mt-2'>{words.length} words found</div>
+              <div>{words.length} words found</div>
               <ul>
                 {words?.map(e => (
-                  <li key={e}>{e}</li>
+                  <li key={e} onClick={() => {
+                    setShowModal(true);
+                    setSelectedWord(e);
+                  }}>{e}</li>
                 ))}
               </ul>
             </>
           )
         }
+
+        <DefinationModal
+          show={showModal}
+          setShow={setShowModal}
+          word={selectedWord}
+        />
+
       </div>
     </div>
   );

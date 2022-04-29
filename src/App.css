@@ -38,7 +38,7 @@
 }
 
 .word-box {
-  height: 450px;
+  height: 420px;
   overflow: auto;
 }
 .word-box ul {
@@ -63,4 +63,13 @@
 
 .mt-2 {
   margin-top: 10px;
+}
+
+.text-gray{
+  color: #555
+}
+
+body {
+  font-family: cursive;
+  font-size: 14px;
 }
